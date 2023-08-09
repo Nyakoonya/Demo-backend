@@ -7,12 +7,16 @@ var http = require("http");
 var debug = require("debug");
 var bodyParser = require("body-parser");
 const cors = require('cors'); // 跨域模块
+const db = require("./models");
 
 var loader = require("./routes/loader");
 
 var app = express();
 var server = http.createServer(app);
 
+global.__basedir = __dirname + "/..";
+db.sequelize.sync();
+app.use(express.static(path.join(__basedir, "resources/static/assets/uploads/excel")));
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
