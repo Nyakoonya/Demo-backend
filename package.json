@@ -24,7 +24,8 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.6.0",
     "read-excel-file": "^5.6.1",
-    "sequelize": "^6.32.1"
+    "sequelize": "^6.32.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "crypto": "^1.0.1",

@@ -19,6 +19,8 @@ module.exports = (sequelize, Sequelize, tableName, excelModel) => {
     //   type: Sequelize.BOOLEAN,
     // },
     ...attributes,
+  }, {
+    freezeTableName: true
   });
   return Excel;
 };

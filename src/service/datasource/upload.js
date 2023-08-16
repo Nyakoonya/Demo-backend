@@ -1,10 +1,11 @@
 const { CODE_ERROR, CODE_SUCCESS } = require("../../utils/constant");
 const db = require("../../models");
-
+const Datasource = db.datasource;
 const readXlsxFile = require("read-excel-file/node");
 const excel = require("exceljs");
-
+const id = global.userId || "a861b242-1f51-11ee-a44a-70bb57828822";
 const uploadExcelDatasource = async (req, res) => {
+  const {type, folderId } = req;
   try {
     if (req.file == undefined) {
       res.json({
@@ -50,13 +51,25 @@ const uploadExcelDatasource = async (req, res) => {
         })()
           .then(() => {
             // 批量插入更新数据
-            console.log('excelData---->>>', excelData)
+            console.log("excelData---->>>", excelData);
             ExcelDB.bulkCreate(excelData)
+              .then(() => {
+                Datasource.create({
+                  title: req.file.originalname,
+                  folderId,
+                  type,
+                  tableName: req.file.filename,
+                  ownerId: id,
+                });
+              })
               .then(() => {
                 res.json({
                   code: CODE_SUCCESS,
                   msg: "Upload the file successfully: " + req.file.originalname,
-                  data: null,
+                  data: {
+                    title: req.file.originalname,
+                    tableName: req.file.filename,
+                  },
                 });
               })
               .catch((error) => {

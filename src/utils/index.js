@@ -53,7 +53,30 @@ function queryOne(sql) {
   });
 }
 
+function dropTable(tableName) {
+  const _connect = connect();
+  const sql = `DROP TABLE ${tableName}`;
+  return new Promise((resolve, reject) => {
+    try {
+      _connect.query(sql, (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
+    } catch (err) {
+      console.log("err :>>", err);
+      reject(err);
+    } finally {
+      // release the connection
+      _connect.end();
+    }
+  });
+}
+
 module.exports = {
   querySql,
   queryOne,
+  dropTable
 };

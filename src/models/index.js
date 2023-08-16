@@ -8,6 +8,9 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     ...dbConfig.pool,
   },
   operatorAliases: false,
+  define: {
+    timestamps: false,
+  },
 });
 
 const db = {};
@@ -15,6 +18,9 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // db.excel = require("./datasource/ExcelModel.js")(sequelize, Sequelize, excelHandler);
+db.dashboard = require("./dashboard.js")(sequelize, Sequelize);
+db.datasource = require("./datasource/datasource.js")(sequelize, Sequelize);
+db.report = require("./reports.js")(sequelize, Sequelize);
 
 (async () => {
   try {
