@@ -17,7 +17,9 @@ function findAllDatasource(req, res, next) {
       res.json({
         code: CODE_SUCCESS,
         msg: "Get all datasources successfully!",
-        data: result,
+        data: {
+          list: result
+        },
       });
     })
     .catch((error) => {
@@ -63,7 +65,7 @@ function findDataosurceData(req, res, next) {
     });
 }
 // only for db datasource
-function fincDatasourceConfiguration(req, res, next) {}
+function findDatasourceConfiguration(req, res, next) {}
 function updateDatasourceInfo(req, res, next) {
   const { id, title } = req.body;
   Datasource.update(

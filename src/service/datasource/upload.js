@@ -5,7 +5,7 @@ const readXlsxFile = require("read-excel-file/node");
 const excel = require("exceljs");
 const id = global.userId || "a861b242-1f51-11ee-a44a-70bb57828822";
 const uploadExcelDatasource = async (req, res) => {
-  const {type, folderId } = req;
+  const {type, folderId } = req.body;
   try {
     if (req.file == undefined) {
       res.json({

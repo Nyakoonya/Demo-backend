@@ -1,18 +1,18 @@
 module.exports = (sequelize, Sequelize) => {
-  const datasource = sequelize.define("Datasource", {
+  const folder = sequelize.define("Folder", {
     title: Sequelize.STRING,
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
     },
-    folderId: Sequelize.UUID,
-    type: {
+    ownerId: Sequelize.UUID,
+    description: {
       type: Sequelize.STRING,
       defaultValue: "",
     },
-    tableName: Sequelize.STRING,
-    ownerId: Sequelize.UUID,
+    owner: Sequelize.STRING,
+    img: Sequelize.STRING
   });
-  return datasource;
+  return folder;
 };
