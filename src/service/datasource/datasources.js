@@ -18,7 +18,7 @@ function findAllDatasource(req, res, next) {
         code: CODE_SUCCESS,
         msg: "Get all datasources successfully!",
         data: {
-          list: result
+          list: result,
         },
       });
     })
@@ -43,18 +43,37 @@ function findDataosurceData(req, res, next) {
       },
     }
   )
-    .then((tableName) => {
-      sequelize.query(
-        `SELECT * FROM ${tableName} limit ${(page - 1) * row}, ${row}`
-      );
-    })
     .then((result) => {
-      console.log("result", result);
-      res.json({
-        code: CODE_SUCCESS,
-        msg: "Get datasource data successfully!",
-        data: result,
-      });
+      const {
+        dataValues: { tableName },
+      } = result && result[0];
+      sequelize
+        .query(`SELECT * FROM ${tableName} LIMIT ${row} OFFSET ${page - 1}`)
+        .then((result) => {
+          console.log("result", result);
+          if (result.length > 0) {
+            sequelize
+              .query(`SELECT COUNT(*) as total FROM ${tableName} as total`)
+              .then((response) => {
+                console.log("response", response);
+                const { total } = response[0][0];
+                res.json({
+                  code: CODE_SUCCESS,
+                  msg: "Get datasource data successfully!",
+                  data: {
+                    data: result[0],
+                    total,
+                  },
+                });
+              });
+          } else {
+            res.json({
+              code: CODE_ERROR,
+              msg: "Get datasource data failed!",
+              data: null,
+            });
+          }
+        });
     })
     .catch((error) => {
       res.json({

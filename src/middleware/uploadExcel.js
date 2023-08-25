@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     console.log("file.originalname", file.originalname);
-    cb(null, `${Date.now()}-demo-${file.originalname}`);
+    cb(null, `${Date.now()}${file.originalname}`);
   },
 });
 const uploadExcel = multer({

@@ -58,7 +58,7 @@ const uploadExcelDatasource = async (req, res) => {
                   title: req.file.originalname,
                   folderId,
                   type,
-                  tableName: req.file.filename,
+                  tableName: req.file.filename.split('.')[0],
                   ownerId: id,
                 });
               })
