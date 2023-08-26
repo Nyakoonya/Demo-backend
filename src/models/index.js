@@ -22,7 +22,7 @@ db.folder = require("./folder.js")(sequelize, Sequelize);
 db.dashboard = require("./dashboard.js")(sequelize, Sequelize);
 db.datasource = require("./datasource/datasource.js")(sequelize, Sequelize);
 db.report = require("./reports.js")(sequelize, Sequelize);
-
+db.field = require("./datasource/field")(sequelize, Sequelize);
 (async () => {
   try {
     await sequelize.authenticate();
