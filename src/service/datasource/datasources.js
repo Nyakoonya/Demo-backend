@@ -1,5 +1,6 @@
 const { CODE_ERROR, CODE_SUCCESS } = require("../../utils/constant");
 const db = require("../../models");
+const dbConfig = require("../../config/db.config");
 const id = global.userId || "a861b242-1f51-11ee-a44a-70bb57828822";
 const owner = global.username || "admin";
 const Datasource = db.datasource;
@@ -148,9 +149,37 @@ function deleteDatasource(req, res, next) {
       });
     });
 }
+
+function queryColumnsUnderFolder(req, res) {
+  const { folderId } = req.query;
+  // console.log('folderId-------------->>>>>', folderId)
+  const queryColumnsSql = `select ds.id as dataSourceId, ds.title , cl.COLUMN_NAME as columnName from
+  \`${dbConfig.DB}\`.\`datasources\` ds
+  inner join \`INFORMATION_SCHEMA\`.\`COLUMNS\` cl
+  on ds.tableName = cl.TABLE_NAME
+  and cl.\`TABLE_SCHEMA\`= '${dbConfig.DB}'
+  where ds.folderId = '${folderId}'
+  order by ds.id asc, cl.COLUMN_NAME asc`
+  sequelize.query(queryColumnsSql).then((result)=>{
+    // console.log('result------->>>>>', result);
+    res.json({
+      code: CODE_SUCCESS,
+      msg: 'Get columns under folder successfully',
+      data: result.length > 0 ? result[0] : [],
+    });
+  })
+  .catch((error) => {
+    res.json({
+      code: CODE_ERROR,
+      msg: error.message,
+      data: null,
+    });
+  });
+}
 module.exports = {
   findAllDatasource,
   findDataosurceData,
   updateDatasourceInfo,
   deleteDatasource,
+  queryColumnsUnderFolder
 };

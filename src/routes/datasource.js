@@ -14,4 +14,5 @@ router.put("/", datasourceService.updateDatasourceInfo);
 router.get("/list", datasourceService.findAllDatasource);
 router.get("/data", datasourceService.findDataosurceData);
 router.delete("/:id", datasourceService.deleteDatasource);
+router.get('/columnsUnderFolder', datasourceService.queryColumnsUnderFolder);
 module.exports = router;
