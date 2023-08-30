@@ -4,6 +4,33 @@ const id = global.userId || "a861b242-1f51-11ee-a44a-70bb57828822";
 const sequelize = db.sequelize;
 const Report = db.report;
 const Datasource = db.datasource;
+
+/* fetch all reports info by dash id */
+function fetchAllReportsUnderDash(req, res) {
+  const { dashId } = req.query;
+  Report.findAll({
+    where: {
+      dashId: dashId,
+    },
+  })
+    .then((result) => {
+      console.log("result---- fetch all reports", result);
+      res.json({
+        code: CODE_SUCCESS,
+        msg: "Get all reports successfully!",
+        data: result,
+      });
+    })
+    .catch((error) => {
+      res.json({
+        code: CODE_ERROR,
+        msg: error.message,
+        data: null,
+      });
+    });
+}
+
+/* fetch report data by datasetting */
 function fetchReportData(req, res, next) {
   const {
     dataSetting: { dimensions, measures },
@@ -35,40 +62,56 @@ function fetchReportData(req, res, next) {
     }
   });
   console.log("attributes", attributes);
-  Datasource.findAll(
-    {
-      attributes: ["tableName"],
+  console.log("fieldsSqlString", fieldsSqlString);
+  console.log("id", id);
+  Datasource.findAll({
+    where: {
+      id,
     },
-    {
-      where: {
-        id,
-      },
-    }
-  )
-    .then((result) => {
-      console.log("result", result);
-      sequelize.query(`SELECT TOP ${limit} ${fieldsSqlString} FROM ${result}`);
-    })
-    .then((data) => {
-      console.log("data", data);
-      //[{a: xx,b:xx}, {a:xx,b:xx}]->{dimensions:[{datasourceId:..,fieldName:.., index:0}],measures:[], data:[[xx,xx], [xx, xx]]}
-      const newDimensions = dimensions.map((dim, i) => ({ ...dim, index: i }));
-      const newMeasures = measures.map((mea, i) => ({
-        ...mea,
-        index: measureFirstIndex + i,
-      }));
-      const newData = data.map((d) => attributes.map((a) => d[a]));
-      console.log("newData", newData);
+  }).then((result) => {
+    console.log("result", result);
+    if (result.length > 0) {
+      const { tableName } = result[0].dataValues;
+      sequelize
+        .query(`SELECT ${fieldsSqlString} FROM ${tableName} LIMIT ${limit}`)
+        .then((data) => {
+          console.log("data", data);
+          //[{a: xx,b:xx}, {a:xx,b:xx}]->{dimensions:[{datasourceId:..,fieldName:.., index:0}],measures:[], data:[[xx,xx], [xx, xx]]}
+          const newDimensions = dimensions.map((dim, i) => ({
+            ...dim,
+            index: i,
+          }));
+          const newMeasures = measures.map((mea, i) => ({
+            ...mea,
+            index: measureFirstIndex + i,
+          }));
+          const newData = data[0].map((d) => attributes.map((a) => d[a]));
+          console.log("newData", newData);
+          res.json({
+            code: CODE_SUCCESS,
+            msg: "Fetch data successfully!",
+            data: {
+              dimensions: newDimensions,
+              measures: newMeasures,
+              data: newData,
+            },
+          });
+        })
+        .catch((error) => {
+          res.json({
+            code: CODE_ERROR,
+            msg: error.message,
+            data: null,
+          });
+        });
+    } else {
       res.json({
-        code: CODE_SUCCESS,
-        msg: "Fetch data successfully!",
-        data: {
-          dimensions: newDimensions,
-          measures: newMeasures,
-          data,
-        },
+        code: CODE_ERROR,
+        msg: "Cannot not find the data source",
+        data: null,
       });
-    });
+    }
+  });
 }
 function saveReports(req, res, next) {
   const { reports, dashId } = req.body;
@@ -100,6 +143,7 @@ function saveReports(req, res, next) {
 }
 
 module.exports = {
+  fetchAllReportsUnderDash,
   fetchReportData,
   saveReports,
 };

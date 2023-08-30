@@ -7,8 +7,6 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
     },
     dashId: Sequelize.UUID,
-    folderId: Sequelize.UUID,
-    ownerId: Sequelize.UUID,
     category: Sequelize.STRING,
     type: Sequelize.STRING,
     content: Sequelize.JSON,
@@ -16,6 +14,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.JSON,
       allowNull: true,
     },
+    limit: Sequelize.INTEGER
   });
   return report;
 };
