@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const CryptoJS = require("crypto-js");
 
 function md5(s) {
   return crypto
@@ -8,10 +9,13 @@ function md5(s) {
 }
 
 function decodeAes(encrypted) {
-  const key = "demo";
-  const decipher = crypto.createDecipher("aes192", key);
-  let decrypted = decipher.update(encrypted, "hex", "utf8");
-  decrypted += decipher.final("utf8");
+  const secretPassphrase = CryptoJS.enc.Utf8.parse("demo");
+  const iv = CryptoJS.enc.Utf8.parse("demo");
+  const decrypted = CryptoJS.AES.decrypt(encrypted, secretPassphrase, {
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+    iv,
+  }).toString(CryptoJS.enc.Utf8);
   return decrypted;
 }
 
@@ -19,3 +23,4 @@ module.exports = {
   md5,
   decodeAes,
 };
+console.log('md5', md5('111111'))

@@ -16,7 +16,7 @@ const jwtAuth = expressJwt({
   },
 }).unless({
   // whiteList
-  path: ["/", "/api/login"],
+  path: ["/", "/api/users/login"],
 });
 
 // resolve jwt-token

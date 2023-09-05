@@ -18,6 +18,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // db.excel = require("./datasource/ExcelModel.js")(sequelize, Sequelize, excelHandler);
+db.user = require("./users.js")(sequelize, Sequelize);
 db.folder = require("./folder.js")(sequelize, Sequelize);
 db.dashboard = require("./dashboard.js")(sequelize, Sequelize);
 db.datasource = require("./datasource/datasource.js")(sequelize, Sequelize);

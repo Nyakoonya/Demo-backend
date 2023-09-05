@@ -3,8 +3,9 @@ var fs = require("fs");
 
 var router = express.Router();
 var files = fs.readdirSync(__dirname);
+const { jwtAuth, decode } = require("../utils/user-jwt"); // 引入jwt认证函数
 
-
+router.use(jwtAuth); //注入认证模块
 files
   .filter((file, i) => file !== "loader.js")
   .forEach((file, i) => {
@@ -24,7 +25,7 @@ router.use((err, req, res, next) => {
     // 抛出401异常
     res.status(status).json({
       code: status,
-      msg: "授权过期，请重新登录",
+      msg: "Authorization expired, please login again!",
       data: null,
     });
   } else {
