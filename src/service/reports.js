@@ -73,7 +73,7 @@ function fetchReportData(req, res, next) {
     if (result.length > 0) {
       const { tableName } = result[0].dataValues;
       sequelize
-        .query(`SELECT ${fieldsSqlString} FROM ${tableName} LIMIT ${limit}`)
+        .query(`SELECT \`${fieldsSqlString}\` FROM \`${tableName}\` LIMIT ${limit}`)
         .then((data) => {
           console.log("data", data);
           //[{a: xx,b:xx}, {a:xx,b:xx}]->{dimensions:[{datasourceId:..,fieldName:.., index:0}],measures:[], data:[[xx,xx], [xx, xx]]}
