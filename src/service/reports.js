@@ -56,9 +56,9 @@ function fetchReportData(req, res, next) {
   let fieldsSqlString = "";
   attributes.forEach((a, i) => {
     if (i === attributes.length - 1) {
-      fieldsSqlString += a;
+      fieldsSqlString += `\`${a}\``;
     } else {
-      fieldsSqlString += a + ",";
+      fieldsSqlString += `\`${a}\`` + ",";
     }
   });
   console.log("attributes", attributes);
