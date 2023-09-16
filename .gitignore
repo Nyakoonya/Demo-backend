@@ -125,3 +125,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# uploaded excels
+
+.resources/static/assets/uploads/excel/*.xlsx
+.resources/static/assets/uploads/excel/*.xls
