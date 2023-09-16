@@ -49,12 +49,12 @@ function findDataosurceData(req, res, next) {
         dataValues: { tableName },
       } = result && result[0];
       sequelize
-        .query(`SELECT * FROM ${tableName} LIMIT ${row} OFFSET ${page - 1}`)
+        .query(`SELECT * FROM \`${tableName}\` LIMIT ${row} OFFSET ${page - 1}`)
         .then((result) => {
           console.log("result", result);
           if (result.length > 0) {
             sequelize
-              .query(`SELECT COUNT(*) as total FROM ${tableName} as total`)
+              .query(`SELECT COUNT(*) as total FROM \`${tableName}\` as total`)
               .then((response) => {
                 console.log("response", response);
                 const { total } = response[0][0];
@@ -95,7 +95,7 @@ function updateDatasourceInfo(req, res, next) {
     {
       where: {
         id,
-        folderId
+        folderId,
       },
     }
   )
@@ -117,23 +117,27 @@ function updateDatasourceInfo(req, res, next) {
 
 function deleteDatasource(req, res, next) {
   const { id } = req.params;
-  Datasource.findAll(
-    {
-      attributes: ["tableName"],
+  Datasource.findAll({
+    where: {
+      id,
     },
-    {
-      where: {
-        id,
-      },
-    }
-  )
+  })
     .then((result) => {
-      Datasource.destroy({
-        where: {
-          id,
-        },
-      });
-      dropTable(result);
+      if (result.length > 0) {
+        const { tableName } = result[0].dataValues;
+        Datasource.destroy({
+          where: {
+            id,
+          },
+        });
+        dropTable(tableName);
+      } else {
+        res.json({
+          code: CODE_ERROR,
+          msg:'cannot find this datasource',
+          data: null,
+        });
+      }
     })
     .then(() => {
       res.json({
@@ -160,27 +164,29 @@ function queryColumnsUnderFolder(req, res) {
   on ds.tableName = cl.TABLE_NAME
   and cl.\`TABLE_SCHEMA\`= '${dbConfig.DB}'
   where ds.folderId = '${folderId}'
-  order by ds.id asc, cl.COLUMN_NAME asc`
-  sequelize.query(queryColumnsSql).then((result)=>{
-    // console.log('result------->>>>>', result);
-    res.json({
-      code: CODE_SUCCESS,
-      msg: 'Get columns under folder successfully',
-      data: result.length > 0 ? result[0] : [],
+  order by ds.id asc, cl.COLUMN_NAME asc`;
+  sequelize
+    .query(queryColumnsSql)
+    .then((result) => {
+      // console.log('result------->>>>>', result);
+      res.json({
+        code: CODE_SUCCESS,
+        msg: "Get columns under folder successfully",
+        data: result.length > 0 ? result[0] : [],
+      });
+    })
+    .catch((error) => {
+      res.json({
+        code: CODE_ERROR,
+        msg: error.message,
+        data: null,
+      });
     });
-  })
-  .catch((error) => {
-    res.json({
-      code: CODE_ERROR,
-      msg: error.message,
-      data: null,
-    });
-  });
 }
 module.exports = {
   findAllDatasource,
   findDataosurceData,
   updateDatasourceInfo,
   deleteDatasource,
-  queryColumnsUnderFolder
+  queryColumnsUnderFolder,
 };
