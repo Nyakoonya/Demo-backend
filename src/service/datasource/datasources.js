@@ -87,7 +87,7 @@ function findDataosurceData(req, res, next) {
 // only for db datasource
 function findDatasourceConfiguration(req, res, next) {}
 function updateDatasourceInfo(req, res, next) {
-  const { id, title } = req.body;
+  const { id, title, folderId } = req.body;
   Datasource.update(
     {
       title,
@@ -95,6 +95,7 @@ function updateDatasourceInfo(req, res, next) {
     {
       where: {
         id,
+        folderId
       },
     }
   )

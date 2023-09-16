@@ -63,13 +63,12 @@ function readFoldersByUser(req, res, next) {
     });
 }
 function updateFolderInfo(req, res, next) {
-  const { id, title, description, img } = req.body;
+  const { id, title, description } = req.body;
 
   Folder.update(
     {
       title,
       description,
-      img,
     },
     {
       where: {

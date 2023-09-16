@@ -5,6 +5,7 @@ const id = global.userId || "a861b242-1f51-11ee-a44a-70bb57828822";
 const owner = global.username || "admin";
 const initialName = "untitled";
 const Dashboard = db.dashboard;
+const Report = db.report;
 function createDashboard(req, res, next) {
   const { folderId } = req.body;
   Dashboard.create({
@@ -54,7 +55,7 @@ function findAllDashboards(req, res) {
 
 function updateDashboard(req, res) {
   const { id, folderId, title, description } = req.body;
-  console.log('req.body', req.body)
+  console.log("req.body", req.body);
   Dashboard.update(
     {
       title,
@@ -90,13 +91,14 @@ function deleteDashboard(req, res) {
     where: {
       id,
     },
-  }).then(() => {
-    Report.destroy({
-      where: {
-        dashId: id,
-      }
-    })
   })
+    .then(() => {
+      Report.destroy({
+        where: {
+          dashId: id,
+        },
+      });
+    })
     .then(() => {
       res.json({
         code: CODE_SUCCESS,
@@ -117,5 +119,5 @@ module.exports = {
   createDashboard,
   findAllDashboards,
   updateDashboard,
-  deleteDashboard
+  deleteDashboard,
 };
