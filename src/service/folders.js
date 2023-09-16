@@ -1,8 +1,11 @@
+const { sequelize } = require("../models");
 const { CODE_ERROR, CODE_SUCCESS } = require("../utils/constant");
 const ownerId = global.userId || "a861b242-1f51-11ee-a44a-70bb57828822";
 const owner = global.username || "admin";
 const initialName = "untitled";
 const Folder = require("../models").folder;
+const Datasource = require("../models").datasource;
+const Dashboard = require("../models").dashboard;
 function createFolder(req, res, next) {
   Folder.create({
     title: initialName,
@@ -97,6 +100,22 @@ function deleteFolderById(req, res, next) {
     where: {
       id,
     },
+  }).then(() => {
+    Datasource.destroy({
+      where: {
+        folderId: id,
+      },
+    })
+  })
+  .then(() => {
+    sequelize.query(`DELETE FROM REPORTS WHERE dashId in (SELECT id FROM DASHBOARDS WHERE folderId =${id})`);
+  })
+  .then(() => {
+    Dashboard.destroy({
+      where: {
+        folderId: id,
+      },
+    })
   })
     .then(() => {
       res.json({

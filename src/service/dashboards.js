@@ -90,6 +90,12 @@ function deleteDashboard(req, res) {
     where: {
       id,
     },
+  }).then(() => {
+    Report.destroy({
+      where: {
+        dashId: id,
+      }
+    })
   })
     .then(() => {
       res.json({
