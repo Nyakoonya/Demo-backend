@@ -34,7 +34,7 @@ function login(req, res, next) {
         password,
       },
     }).then((result) => {
-      console.log("result---->>login", result[0].dataValues);
+      // console.log("result---->>login", result[0].dataValues);
       if (result.length > 0) {
         const user = result[0].dataValues;
         //  preserve userid
