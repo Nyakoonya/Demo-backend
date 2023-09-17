@@ -6,6 +6,7 @@ const initialName = "untitled";
 const Folder = require("../models").folder;
 const Datasource = require("../models").datasource;
 const Dashboard = require("../models").dashboard;
+const { dropTable } = require("../utils/index");
 function createFolder(req, res, next) {
   Folder.create({
     title: initialName,
@@ -37,7 +38,6 @@ function readFoldersByUser(req, res, next) {
     },
   })
     .then((result) => {
-      console.log("read folders", result);
       if (!result) {
         res.json({
           code: CODE_ERROR,
@@ -94,28 +94,52 @@ function updateFolderInfo(req, res, next) {
 
 function deleteFolderById(req, res, next) {
   const { id } = req.params;
-
-  Folder.destroy({
+  Dashboard.destroy({
     where: {
-      id,
+      folderId: id,
     },
-  }).then(() => {
-    Datasource.destroy({
-      where: {
-        folderId: id,
-      },
+  })
+    .then(() => {
+      sequelize.query(
+        `DELETE FROM REPORTS WHERE dashId in (SELECT id FROM DASHBOARDS WHERE folderId ='${id}')`
+      );
     })
-  })
-  .then(() => {
-    sequelize.query(`DELETE FROM REPORTS WHERE dashId in (SELECT id FROM DASHBOARDS WHERE folderId =${id})`);
-  })
-  .then(() => {
-    Dashboard.destroy({
-      where: {
-        folderId: id,
-      },
+    .then(() => {
+      Datasource.findAll({
+        where: {
+          folderId: id,
+        },
+      });
     })
-  })
+    .then((result) => {
+      if (result && result.length > 0) {
+        const tableNames = result.map((r) => r.dataValues.tableName);
+        Datasource.destroy({
+          where: {
+            folderId: id,
+          },
+        })
+          .then(() => {
+            tableNames.forEach((t) => dropTable(t));
+          })
+          .catch((err) => {
+            res.json({
+              code: CODE_ERROR,
+              msg: err.message,
+              data: null,
+            });
+          });
+      } else {
+        Promise.resolve();
+      }
+    })
+    .then(() => {
+      Folder.destroy({
+        where: {
+          id,
+        },
+      });
+    })
     .then(() => {
       res.json({
         code: CODE_SUCCESS,

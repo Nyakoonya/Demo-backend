@@ -108,7 +108,10 @@ function fetchReportData(req, res, next) {
       res.json({
         code: CODE_ERROR,
         msg: "Cannot not find the data source",
-        data: null,
+        data: {
+          dimensions,
+          measures,
+        },
       });
     }
   });
