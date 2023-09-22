@@ -34,29 +34,22 @@ function findAllDatasource(req, res, next) {
 // paging query data
 function findDataosurceData(req, res, next) {
   const { id, page, row } = req.query;
-  Datasource.findAll(
-    {
-      attributes: ["tableName"],
+  console.log("id---->>>", id);
+  Datasource.findAll({
+    where: {
+      id,
     },
-    {
-      where: {
-        id,
-      },
-    }
-  )
+  })
     .then((result) => {
-      const {
-        dataValues: { tableName },
-      } = result && result[0];
+      const { tableName } = result && result[0];
+      console.log("tableName---->>>>", tableName);
       sequelize
         .query(`SELECT * FROM \`${tableName}\` LIMIT ${row} OFFSET ${page - 1}`)
         .then((result) => {
-          console.log("result", result);
           if (result.length > 0) {
             sequelize
               .query(`SELECT COUNT(*) as total FROM \`${tableName}\` as total`)
               .then((response) => {
-                console.log("response", response);
                 const { total } = response[0][0];
                 res.json({
                   code: CODE_SUCCESS,
@@ -134,7 +127,7 @@ function deleteDatasource(req, res, next) {
       } else {
         res.json({
           code: CODE_ERROR,
-          msg:'cannot find this datasource',
+          msg: "cannot find this datasource",
           data: null,
         });
       }
