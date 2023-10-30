@@ -7,5 +7,6 @@ const service = require("../service/reports");
 router.get('/', service.fetchAllReportsUnderDash);
 router.post("/data", service.fetchReportData);
 router.post('/', service.saveReports);
+router.get('/getMainPage', service.fetchAllReportsOnMainPage);
 
 module.exports = router;

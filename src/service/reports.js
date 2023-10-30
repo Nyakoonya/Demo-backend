@@ -3,6 +3,7 @@ const db = require("../models");
 const id = global.userId || "a861b242-1f51-11ee-a44a-70bb57828822";
 const sequelize = db.sequelize;
 const Report = db.report;
+const Mainpage_settings = db.Mainpage_settings;
 const Datasource = db.datasource;
 
 /* fetch all reports info by dash id */
@@ -28,6 +29,46 @@ function fetchAllReportsUnderDash(req, res) {
         data: null,
       });
     });
+}
+
+function fetchAllReportsOnMainPage(req,res){
+  Mainpage_settings.findAll({
+    where: {
+      id: "main_page_dashboard_id",
+    },
+  })
+  .then((result) => {
+    console.log("result1---- fetch all reports", result);
+    if(result.length > 0 && result[0].item_value != null)
+    {
+      Report.findAll({
+        where: {
+          dashId: result[0].item_value,
+        },
+      })
+        .then((innerResult) => {
+          console.log("result2---- fetch all reports", innerResult);
+          res.json({
+            code: CODE_SUCCESS,
+            msg: "Get all reports successfully!",
+            data: innerResult,
+          });
+        })
+        .catch((error) => {
+          res.json({
+            code: CODE_ERROR,
+            msg: error.message,
+            data: null,
+          });
+        });
+    }else{
+      res.json({
+        code: CODE_ERROR,
+        msg: error.message,
+        data: null,
+      });
+    }
+  })
 }
 
 /* fetch report data by datasetting */
@@ -149,4 +190,5 @@ module.exports = {
   fetchAllReportsUnderDash,
   fetchReportData,
   saveReports,
+  fetchAllReportsOnMainPage,
 };

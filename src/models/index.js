@@ -24,6 +24,7 @@ db.dashboard = require("./dashboard.js")(sequelize, Sequelize);
 db.datasource = require("./datasource/datasource.js")(sequelize, Sequelize);
 db.report = require("./reports.js")(sequelize, Sequelize);
 db.field = require("./datasource/field")(sequelize, Sequelize);
+db.Mainpage_settings = require("./mainpagesettings.js")(sequelize, Sequelize);
 (async () => {
   try {
     await sequelize.authenticate();

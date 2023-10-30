@@ -10,5 +10,7 @@ router.get("/list", service.findAllDashboards);
 router.put("/", service.updateDashboard);
 // delete
 router.delete("/:id", service.deleteDashboard);
+// save dashboard as big screen in index page
+router.post("/setmainpagedashboard", service.setmainpagedashboard)
 
 module.exports = router;

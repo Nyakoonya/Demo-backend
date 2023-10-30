@@ -5,6 +5,7 @@ const id = global.userId || "a861b242-1f51-11ee-a44a-70bb57828822";
 const owner = global.username || "admin";
 const initialName = "untitled";
 const Dashboard = db.dashboard;
+const Mainpage_settings = db.Mainpage_settings;
 const Report = db.report;
 function createDashboard(req, res, next) {
   const { folderId } = req.body;
@@ -115,9 +116,39 @@ function deleteDashboard(req, res) {
     });
 }
 
+// set main page dashboard
+function setmainpagedashboard(req, res) {
+  const { id } = req.params;
+  Mainpage_settings.update(
+    {
+      item_value:id
+    },
+    {
+      where: {
+        id: "main_page_dashboard_id"
+      },
+    }
+  )
+    .then(() => {
+      res.json({
+        code: CODE_SUCCESS,
+        msg: "Update successfully!",
+        data: null,
+      });
+    })
+    .catch((error) => {
+      res.json({
+        code: CODE_ERROR,
+        msg: error.message,
+        data: null,
+      });
+    });
+}
+
 module.exports = {
   createDashboard,
   findAllDashboards,
   updateDashboard,
   deleteDashboard,
+  setmainpagedashboard,
 };
