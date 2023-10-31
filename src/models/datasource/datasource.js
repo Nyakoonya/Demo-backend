@@ -2,11 +2,11 @@ module.exports = (sequelize, Sequelize) => {
   const datasource = sequelize.define("Datasource", {
     title: Sequelize.STRING,
     id: {
-      type: Sequelize.UUID,
-      defaultValue: Sequelize.UUIDV4,
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
     },
-    folderId: Sequelize.UUID,
+    folderId: Sequelize.INTEGER,
     type: {
       type: Sequelize.STRING,
       defaultValue: "",

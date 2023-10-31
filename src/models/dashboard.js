@@ -1,16 +1,16 @@
-const parser = require('../utils/parser');
+const parser = require("../utils/parser");
 module.exports = (sequelize, Sequelize) => {
   const dashboard = sequelize.define("Dashboards", {
     title: Sequelize.STRING,
     id: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    folderId: Sequelize.UUID,
+    folderId: Sequelize.INTEGER,
     description: {
-        type: Sequelize.STRING,
-        defaultValue: ''
+      type: Sequelize.STRING,
+      defaultValue: "",
     },
     ownerId: Sequelize.UUID,
   });

@@ -6,7 +6,7 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       primaryKey: true,
     },
-    dashId: Sequelize.UUID,
+    dashId: Sequelize.INTEGER,
     category: Sequelize.STRING,
     type: Sequelize.STRING,
     content: Sequelize.JSON,

@@ -2,8 +2,8 @@ module.exports = (sequelize, Sequelize) => {
   const folder = sequelize.define("Folder", {
     title: Sequelize.STRING,
     id: {
-      type: Sequelize.UUID,
-      defaultValue: Sequelize.UUIDV4,
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
     },
     ownerId: Sequelize.UUID,
@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: "",
     },
     owner: Sequelize.STRING,
-    img: Sequelize.STRING
+    img: Sequelize.STRING,
   });
   return folder;
 };
