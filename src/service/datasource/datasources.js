@@ -44,7 +44,7 @@ function findDataosurceData(req, res, next) {
       const { tableName } = result && result[0];
       console.log("tableName---->>>>", tableName);
       sequelize
-        .query(`SELECT * FROM \`${tableName}\` LIMIT ${row} OFFSET ${page - 1}`)
+        .query(`SELECT * FROM \`${tableName}\` LIMIT ${row} OFFSET ${(page- 1) * row }`)
         .then((result) => {
           if (result.length > 0) {
             sequelize
