@@ -150,43 +150,46 @@ function fetchDashInfoOnMainPage(req, res) {
     where: {
       id: "main_page_dashboard_id",
     },
-  }).then((result) => {
-    console.log("result1---- fetch all reports", result);
-    if (result.length > 0 && result[0].item_value != null) {
-      Dashboard.findAll({
-        where: {
-          id: result[0].item_value,
-        },
-      }).then((dashRes) => {
-        console.log("dashRes", dashRes);
-        if (dashRes.length > 0) {
-          Folder.findAll({
-            where: {
-              id: dashRes[0].folderId,
-            },
-          }).then((folderRes) => {
-            if (folderRes.length > 0) {
-              res.json({
-                code: CODE_SUCCESS,
-                msg: "Get main page successfully!",
-                data: {
-                  folderTitle: folderRes[0].title,
-                  dashTitle: dashRes[0].title,
-                  dashId: dashRes[0].id,
-                },
-              });
-            }
-          });
-        }
-      });
-    } else {
+  })
+    .then((result) => {
+      console.log("result1---- fetch all reports", result);
+      if (result.length > 0 && result[0].item_value != null) {
+        Dashboard.findAll({
+          where: {
+            id: result[0].item_value,
+          },
+        }).then((dashRes) => {
+          console.log("dashRes", dashRes);
+          if (dashRes.length > 0) {
+            Folder.findAll({
+              where: {
+                id: dashRes[0].folderId,
+              },
+            }).then((folderRes) => {
+              if (folderRes.length > 0) {
+                res.json({
+                  code: CODE_SUCCESS,
+                  msg: "Get main page successfully!",
+                  data: {
+                    folderTitle: folderRes[0].title,
+                    folderId: folderRes[0].id,
+                    dashTitle: dashRes[0].title,
+                    dashId: dashRes[0].id,
+                  },
+                });
+              }
+            });
+          }
+        });
+      }
+    })
+    .catch((error) => {
       res.json({
         code: CODE_ERROR,
         msg: error.message,
         data: null,
       });
-    }
-  });
+    });
 }
 
 module.exports = {
